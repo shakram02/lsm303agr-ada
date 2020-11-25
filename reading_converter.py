@@ -2,6 +2,7 @@ import sys
 import re
 import time
 digits = re.compile("\d+")
+new_line_chars = re.compile(r"\r|\n")
 
 
 def twos(binary):
@@ -40,8 +41,12 @@ def read_stream():
     axis_max = [0, 0, 0]
     while True:
         try:
-            line = sys.stdin.readline().strip()
-            # print(line)
+            line = ""
+            line = sys.stdin.readline()
+            line = new_line_chars.sub("", line)
+            print(line)
+            if not line:
+                continue
             line = [int(x) for x in digits.findall(line)]
 
             if not line or len(line) != 6:
