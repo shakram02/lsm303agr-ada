@@ -6,18 +6,6 @@ with HAL;          use HAL;
 with HAL.I2C;      use HAL.I2C;
 with Ada.Text_IO;  use Ada.Text_IO;
 
--- function To_Base16 (Number : in out Integer) return String is
---    Result : String  := "";
---    Index  : Integer := 0;
--- begin
---    while Number /= 0 loop
---       Result := Result & Integer'Image (Number rem 16) & " ";
---       Number := Number / 16;
---    end loop;
-
---    return Result;
--- end To_Base16;
-
 procedure Main is
    Acc     : LSM303AGR.LSM303AGR_Accelerometer (MicroBit.I2C.Controller);
    AccData : All_Axes_Data := (X => 0, Y => 0, Z => 0);

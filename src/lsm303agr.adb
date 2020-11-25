@@ -1,7 +1,4 @@
 package body LSM303AGR is
-
-    function To_UInt10 is new Ada.Unchecked_Conversion (UInt6, UInt10);
-    function To_UInt12 is new Ada.Unchecked_Conversion (UInt16, UInt12);
     function To_Axis_Data is new Ada.Unchecked_Conversion (UInt10, Axis_Data);
 
     function Read_Register
@@ -48,11 +45,8 @@ package body LSM303AGR is
         This.Port.Mem_Read
            (Addr => Device_Address, Mem_Addr => UInt16 (Register_Addr),
             Mem_Addr_Size => Memory_Size_8b, Data => Data, Status => Status);
+        Assert_Status (Status);
 
-        if Status /= Ok then
-            --  No error handling...
-            raise Program_Error;
-        end if;
         return Data (Data'First);
     end Read_Register;
 
@@ -70,11 +64,8 @@ package body LSM303AGR is
            (Addr => Device_Address, Mem_Addr => UInt16 (Register_Addr),
             Mem_Addr_Size => Memory_Size_8b, Data => (1 => Val),
             Status        => Status);
+        Assert_Status (Status);
 
-        if Status /= Ok then
-            --  No error handling...
-            raise Program_Error;
-        end if;
     end Write_Register;
 
     -----------------------------------
@@ -148,11 +139,7 @@ package body LSM303AGR is
            (Addr          => Accelerometer_Address,
             Mem_Addr      => To_Multi_Byte_Read_Address (OUT_X_L_A),
             Mem_Addr_Size => Memory_Size_8b, Data => Data, Status => Status);
-
-        if Status /= Ok then
-            --  No error handling...
-            raise Program_Error;
-        end if;
+        Assert_Status (Status);
 
         AxisData.X := Convert (Data (1), Data (2));
         AxisData.Y := Convert (Data (3), Data (4));
@@ -171,4 +158,12 @@ package body LSM303AGR is
     begin
         return UInt16 (Register_Addr) or MULTI_BYTE_READ;
     end To_Multi_Byte_Read_Address;
+
+    procedure Assert_Status (Status : I2C_Status) is
+    begin
+        if Status /= Ok then
+            --  No error handling...
+            raise Program_Error;
+        end if;
+    end Assert_Status;
 end LSM303AGR;

@@ -8,6 +8,7 @@ package LSM303AGR is
   -- Specifically allowing them in configure procedure
   -- and adjusting conversions after reading the
   -- accelerometer sensor.
+  -- TODO: Add magnetometer support.
 
   type Register_Address is new UInt8;
   type Device_Identifier is new UInt8;
@@ -15,7 +16,7 @@ package LSM303AGR is
    (PowerDown, Freq_1, Freq_10, Freq_25, Freq_50, Freq_100, Freq_200, Freq_400,
     Low_Power, Hi_Res_1k6_Low_power_5k3);
 
-  -- Support HiRes / LowPower / Normal operation modes
+  -- TODO: Support HiRes / LowPower / Normal operation modes
   type Axis_Data is range -2**9 .. 2**9 - 1 with
     Size => 10;
 
