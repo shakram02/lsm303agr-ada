@@ -34,8 +34,8 @@ package LSM303AGR is
 
   procedure Configure (This : LSM303AGR_Accelerometer; Date_Rate : Data_Rate);
 
-function Read_Accelerometer (This : LSM303AGR_Accelerometer) return UInt16;
-  -- function Read_Accelerometer (This : LSM303AGR_Accelerometer) return I2C_Data;
+  function Read_Accelerometer
+   (This : LSM303AGR_Accelerometer) return All_Axes_Data;
 
 private
   type LSM303AGR_Accelerometer (Port : not null Any_I2C_Port)
