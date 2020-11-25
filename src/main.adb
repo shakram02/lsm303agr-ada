@@ -19,8 +19,9 @@ with Ada.Text_IO;  use Ada.Text_IO;
 -- end To_Base16;
 
 procedure Main is
-   Acc     : LSM303AGR.LSM303AGR_Accelerometer (MicroBit.I2C.Controller);
-   AccData : I2C_Data (1 .. 6) := (others => 0);
+   Acc : LSM303AGR.LSM303AGR_Accelerometer (MicroBit.I2C.Controller);
+   -- AccData : I2C_Data (1 .. 6) := (others => 0);
+   AccData : UInt16 := 0;
 
 begin
    if not MicroBit.I2C.Initialized then
@@ -30,15 +31,15 @@ begin
 
    loop
       AccData := LSM303AGR.Read_Accelerometer (Acc);
+      Console.Put (Integer'Image (Integer (AccData)));
+      -- Console.Put (Integer'Image (Integer (AccData (2))));
+      -- Console.Put ("," & Integer'Image (Integer (AccData (1))));
 
-      Console.Put (Integer'Image (Integer (AccData (2))));
-      Console.Put ("," & Integer'Image (Integer (AccData (1))));
+      -- Console.Put ("," & Integer'Image (Integer (AccData (4))));
+      -- Console.Put ("," & Integer'Image (Integer (AccData (3))));
 
-      Console.Put ("," & Integer'Image (Integer (AccData (4))));
-      Console.Put ("," & Integer'Image (Integer (AccData (3))));
-
-      Console.Put ("," & Integer'Image (Integer (AccData (6))));
-      Console.Put ("," & Integer'Image (Integer (AccData (5))));
+      -- Console.Put ("," & Integer'Image (Integer (AccData (6))));
+      -- Console.Put ("," & Integer'Image (Integer (AccData (5))));
 
       Console.Put_Line ("");
 

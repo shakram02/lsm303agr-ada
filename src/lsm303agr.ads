@@ -16,8 +16,8 @@ package LSM303AGR is
     Low_Power, Hi_Res_1k6_Low_power_5k3);
 
   -- Support HiRes / LowPower / Normal operation modes
-  type Axis_Data is range -2**11 .. 2**11 - 1 with
-    Size => 12;
+  type Axis_Data is range -2**9 .. 2**9 - 1 with
+    Size => 10;
 
   type All_Axes_Data is record
     X, Y, Z : Axis_Data;
@@ -34,7 +34,8 @@ package LSM303AGR is
 
   procedure Configure (This : LSM303AGR_Accelerometer; Date_Rate : Data_Rate);
 
-  function Read_Accelerometer (This : LSM303AGR_Accelerometer) return I2C_Data;
+function Read_Accelerometer (This : LSM303AGR_Accelerometer) return UInt16;
+  -- function Read_Accelerometer (This : LSM303AGR_Accelerometer) return I2C_Data;
 
 private
   type LSM303AGR_Accelerometer (Port : not null Any_I2C_Port)

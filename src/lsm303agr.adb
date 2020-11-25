@@ -1,7 +1,8 @@
 package body LSM303AGR is
 
+    function To_UInt10 is new Ada.Unchecked_Conversion (UInt6, UInt10);
     function To_UInt12 is new Ada.Unchecked_Conversion (UInt16, UInt12);
-    function To_Axis_Data is new Ada.Unchecked_Conversion (UInt12, Axis_Data);
+function To_Axis_Data is new Ada.Unchecked_Conversion (UInt10, Axis_Data);
 
     function Read_Register
        (This : LSM303AGR_Accelerometer'Class; Device_Address : I2C_Address;
@@ -122,12 +123,15 @@ package body LSM303AGR is
     -- Read_Accelerometer --
     ------------------------
 
-    function Read_Accelerometer
-       (This : LSM303AGR_Accelerometer) return I2C_Data
+    function Read_Accelerometer (This : LSM303AGR_Accelerometer) return UInt16
+        --    (This : LSM303AGR_Accelerometer) return I2C_Data
+
     is
         Status : I2C_Status;
         -- ConvertedData : UInt16_Array (1 .. 3);
         Data : I2C_Data (1 .. 6) := (others => 0);
+        Axis : UInt10            := 0;
+        T2   : Axis_Data         := 0;
     begin
         This.Port.Mem_Read
            (Addr          => Accelerometer_Address,
@@ -137,7 +141,21 @@ package body LSM303AGR is
             --  No error handling...
             raise Program_Error;
         end if;
-        return Data;
+        declare
+            Tmp : UInt10 := 0;
+
+        begin
+            -- Data 1: Low, Data 2: High
+            Tmp  := UInt10 (Shift_Right (Data (1), 6));
+            Tmp  := Tmp or UInt10 (Data (2)) * 2**2;
+            Axis := Tmp;
+            T2   := To_Axis_Data (Axis);
+        end;
+        -- UInt16 (Data (2)) or ...
+        -- UInt16 (Data (1)) and 2#11#;
+        -- Tmp := Shift_Left (, 2) or UInt10 (Data (1));
+        return Axis;
+        -- return Data;
     end Read_Accelerometer;
 
     function To_Multi_Byte_Read_Address
