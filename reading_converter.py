@@ -1,5 +1,6 @@
 import sys
 import re
+import time
 digits = re.compile("\d+")
 
 
@@ -23,22 +24,40 @@ axis_max = [0, 0, 0]
 while True:
     try:
         line = sys.stdin.readline().strip()
-        print(line)
         line = [int(x) for x in digits.findall(line)]
 
         if not line or len(line) != 6:
             line = ""
             print("skip")
+            time.sleep(0.3)
             continue
 
         for i in range(0, len(line), 2):
-            num = "{:08b}{:08b}".format(line[i], line[i+1])
+            high = line[i]
+            low = line[i+1]
+
+            num = "{:08b}{:08b}".format(high, low)
             print(num, end=" ")
             parsed_num = twos(num[:10])
 
             axis_index = i // 2
             axis_max[axis_index] = max(axis_max[axis_index], parsed_num)
-            print(f"({parsed_num})", end=" | ")
+
+            out = 0
+            out |= high << 8
+            out |= low
+            out >>= 6  # 1100001111000000
+            neg = out & (1 << 9)
+
+            if neg:
+                # 1101100010
+                # 0866  <- out
+                # -158  <- expected
+                out = out ^ 0b1111111111    # Python has no bitwise negation
+                out = out + 1
+                out *= -1
+            print(f"[{out:04}]", end=" ")
+            print(f"{parsed_num:04}", end=" | ")
 
         print()
 
@@ -47,4 +66,4 @@ while True:
         break
     except Exception as e:
         print("EXC", e)
-        continue
+        exit(-1)
