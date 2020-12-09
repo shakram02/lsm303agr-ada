@@ -21,6 +21,7 @@ package LSM303AGR is
     Size => 10;
 
   type All_Axes_Data is record
+      -- Represents accelerometer data for 3-Axes
     X, Y, Z : Axis_Data;
   end record;
 

@@ -31,6 +31,7 @@ package body LSM303AGR is
            (Accelerometer_Address, CTRL_REG1_A, To_UInt8 (CTRLA));
     end Configure;
 
+    procedure Assert_Status (Status : I2C_Status);
     -------------------
     -- Read_Register --
     -------------------
@@ -141,7 +142,9 @@ package body LSM303AGR is
             Mem_Addr_Size => Memory_Size_8b, Data => Data, Status => Status);
         Assert_Status (Status);
 
-        AxisData.X := Convert (Data (1), Data (2));
+        -- LSM303AGR has its X-axis in the opposite direction
+        -- of the MMA8653FCR1 sensor.
+        AxisData.X := Convert (Data (1), Data (2)) * Axis_Data (-1);
         AxisData.Y := Convert (Data (3), Data (4));
         AxisData.Z := Convert (Data (5), Data (6));
 
